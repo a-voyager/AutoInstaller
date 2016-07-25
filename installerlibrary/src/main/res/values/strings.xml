@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">InstallerLibrary</string>
+    <string name="accessibility_service_description">应用自动安装服务</string>
 </resources>

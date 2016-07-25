@@ -3,6 +3,7 @@ package top.wuhaojie.installerlibrary.utils;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,8 +17,9 @@ public class Utils {
 
     public static final String TAG = "Utils";
 
-    // TODO: 2016/7/25 此方法工作有误
-    public static boolean checkRooted() {
+    // 此方法工作有误
+    @Deprecated
+    public static boolean isRooted() {
         Process process = null;
         try {
             process = Runtime.getRuntime().exec("su");
@@ -41,4 +43,15 @@ public class Utils {
         }
         return false;
     }
+
+    public static boolean checkRooted() {
+        boolean result = false;
+        try {
+            result = new File("/system/bin/su").exists() || new File("/system/xbin/su").exists();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
