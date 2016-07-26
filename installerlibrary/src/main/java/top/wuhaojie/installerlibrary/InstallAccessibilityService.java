@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by wuhaojie on 2016/7/25 23:15.
  */
-public class AccessibilityService extends android.accessibilityservice.AccessibilityService {
+public class InstallAccessibilityService extends android.accessibilityservice.AccessibilityService {
 
     private Map<Integer, Boolean> handledMap = new HashMap<>();
 

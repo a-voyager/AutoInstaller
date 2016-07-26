@@ -4,13 +4,17 @@
     <!-- 辅助功能权限 -->
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"/>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
 
         <service
-            android:name=".AccessibilityService"
+            android:name=".InstallAccessibilityService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
