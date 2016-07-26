@@ -14,7 +14,7 @@
   ```
  - 两种自动安装方式:  `ROOT静默安装`  和  `辅助功能自动模拟点击安装` ，并且能够自动选择可用方式
 
-![image](https://github.com/a-voyager/ScrollNumber/raw/master/imgs/GIF.gif)
+![image](https://github.com/a-voyager/AutoInstaller/raw/master/imgs/GIF.gif)
 
 ## 依赖
 可以选择两种方式:
