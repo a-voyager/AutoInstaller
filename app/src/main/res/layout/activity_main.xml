@@ -14,5 +14,5 @@
         android:id="@+id/btn_install"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="install"/>
+        android:text="自动下载安装"/>
 </RelativeLayout>
