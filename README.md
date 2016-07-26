@@ -14,6 +14,8 @@ A library makes your application's auto update **more elegant** !
   ```
  - two ways of silent installation:  `ROOT`  and  `AccessibilityService` , can automatically chose the valid way.
 
+![image](https://github.com/a-voyager/ScrollNumber/raw/master/imgs/GIF.gif)
+
 ## Dependency
 There are two ways:
 
