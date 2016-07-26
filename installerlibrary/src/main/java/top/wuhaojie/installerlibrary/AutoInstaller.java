@@ -117,16 +117,14 @@ public class AutoInstaller extends Handler {
     }
 
     private void installUseAS(String filePath) {
-        if (!isAccessibilitySettingsOn(mContext)) {
-            toAccessibilityService();
-            sendEmptyMessage(3);
-            return;
-        }
-
         Uri uri = Uri.fromFile(new File(filePath));
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, "application/vnd.android.package-archive");
         mContext.startActivity(intent);
+        if (!isAccessibilitySettingsOn(mContext)) {
+            toAccessibilityService();
+            sendEmptyMessage(3);
+        }
     }
 
     private void toAccessibilityService() {
