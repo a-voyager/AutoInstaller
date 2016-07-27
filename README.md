@@ -1,4 +1,5 @@
 # Auto Installer Library
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AutoInstaller-green.svg?style=true)](https://android-arsenal.com/details/1/3972)
 
 [中文](https://github.com/a-voyager/AutoInstaller/blob/master/README_zh.md) | [English](https://github.com/a-voyager/AutoInstaller/blob/master/README.md)
 
