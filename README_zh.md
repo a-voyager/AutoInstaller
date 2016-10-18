@@ -35,6 +35,7 @@
 	dependencies {
 	        compile 'com.github.a-voyager:AutoInstaller:ea0c990b9e'
 	}
+ ```
 
 ## 用法
  - 获取实例
