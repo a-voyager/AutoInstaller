@@ -24,7 +24,17 @@ There are two ways:
  - just add following code to you build.gradle:
 
  ```groovy
- compile 'top.wuhaojie:installerlibrary:1.0.0'
+    // Add it in your root build.gradle at the end of repositories
+ 	allprojects {
+ 		repositories {
+ 			...
+ 			maven { url "https://jitpack.io" }
+ 		}
+ 	}
+ 	// Add the dependency
+	dependencies {
+	        compile 'com.github.a-voyager:AutoInstaller:ea0c990b9e'
+	}
  ```
 
 ## Usage

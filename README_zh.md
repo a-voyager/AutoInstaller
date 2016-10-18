@@ -24,8 +24,17 @@
  - 只需要在build.gradle中添加一下代码即可(可能暂时无法使用):
 
  ```groovy
- compile 'top.wuhaojie:installerlibrary:1.0.0'
- ```
+    // 在项目根目录 build.gradle 添加
+ 	allprojects {
+ 		repositories {
+ 			...
+ 			maven { url "https://jitpack.io" }
+ 		}
+ 	}
+ 	// 在App目录 build.gradle 添加依赖
+	dependencies {
+	        compile 'com.github.a-voyager:AutoInstaller:ea0c990b9e'
+	}
 
 ## 用法
  - 获取实例
