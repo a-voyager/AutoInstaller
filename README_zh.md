@@ -33,7 +33,7 @@
  	}
  	// 在App目录 build.gradle 添加依赖
 	dependencies {
-	        compile 'com.github.a-voyager:AutoInstaller:ea0c990b9e'
+	        compile 'com.github.a-voyager:AutoInstaller:v1.0'
 	}
  ```
 

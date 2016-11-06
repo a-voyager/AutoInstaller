@@ -33,7 +33,7 @@ There are two ways:
  	}
  	// Add the dependency
 	dependencies {
-	        compile 'com.github.a-voyager:AutoInstaller:ea0c990b9e'
+	        compile 'com.github.a-voyager:AutoInstaller:v1.0'
 	}
  ```
 
