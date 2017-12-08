@@ -1,5 +1,6 @@
 package top.wuhaojie.installerlibrary;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -37,9 +38,13 @@ public class InstallAccessibilityService extends android.accessibilityservice.Ac
             if ("android.widget.Button".equals(nodeInfo.getClassName())) {
                 String nodeContent = nodeInfo.getText().toString();
                 Log.d("TAG", "content is " + nodeContent);
-                if ("安装".equals(nodeContent)
+                if (!TextUtils.isEmpty(nodeContent)
+                        && ("安装".equals(nodeContent)
+                        || "install".equals(nodeContent.toLowerCase())
+                        || "done".equals(nodeContent.toLowerCase())
                         || "完成".equals(nodeContent)
-                        || "确定".equals(nodeContent)) {
+                        || "确定".equals(nodeContent)
+                )) {
                     nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     return true;
                 }

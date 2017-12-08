@@ -3,10 +3,12 @@ package top.wuhaojie.installerlibrary;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,6 +21,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import top.wuhaojie.installerlibrary.utils.Utils;
 
@@ -30,7 +40,7 @@ public class AutoInstaller extends Handler {
     private static final String TAG = "AutoInstaller";
     private static volatile AutoInstaller mAutoInstaller;
     private Context mContext;
-    private String mTempPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+    private String mTempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Download";
 
     public enum MODE {
         ROOT_ONLY,
@@ -117,9 +127,17 @@ public class AutoInstaller extends Handler {
     }
 
     private void installUseAS(String filePath) {
-        Uri uri = Uri.fromFile(new File(filePath));
+        File file = new File(filePath);
+        Uri uri = Uri.fromFile(file);
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".fileProvider", file);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         mContext.startActivity(intent);
         if (!isAccessibilitySettingsOn(mContext)) {
             toAccessibilityService();
@@ -247,8 +265,15 @@ public class AutoInstaller extends Handler {
         try {
             URL url = new URL(httpUrl);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(10 * 1000);
-            connection.setReadTimeout(10 * 1000);
+            if (connection instanceof HttpsURLConnection) {
+                SSLContext sslContext = getSLLContext();
+                if (sslContext != null) {
+                    SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                    ((HttpsURLConnection) connection).setSSLSocketFactory(sslSocketFactory);
+                }
+            }
+            connection.setConnectTimeout(60 * 1000);
+            connection.setReadTimeout(60 * 1000);
             connection.connect();
             inputStream = connection.getInputStream();
             outputStream = new FileOutputStream(file);
@@ -273,6 +298,30 @@ public class AutoInstaller extends Handler {
             }
         }
         return file;
+    }
+
+    private SSLContext getSLLContext() {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+            }}, new SecureRandom());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sslContext;
     }
 
     public static class Builder {
