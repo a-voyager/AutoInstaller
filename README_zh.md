@@ -84,6 +84,16 @@ AutoInstaller installer = new AutoInstaller.Builder(this)
         .build();
 ```
 
+
+## 赞助作者
+
+
+![Alipay](http://7xqdz8.com1.z0.glb.clouddn.com/pay_alipay.jpg)
+
+![Weixin](http://7xqdz8.com1.z0.glb.clouddn.com/pay_weixin.png)
+
+
+
 ## License
     The MIT License (MIT)
 
