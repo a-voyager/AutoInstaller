@@ -1,7 +1,9 @@
 package top.wuhaojie.installerlibrary;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -37,7 +39,10 @@ import top.wuhaojie.installerlibrary.utils.Utils;
  */
 public class AutoInstaller extends Handler {
 
-    private static final String TAG = "AutoInstaller";
+    private static final String TAG = AutoInstaller.class.getSimpleName();
+    private static final int REQUEST_CODE_PERMISSION_STORAGE = 100;
+
+
     private static volatile AutoInstaller mAutoInstaller;
     private Context mContext;
     private String mTempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Download";
@@ -72,6 +77,8 @@ public class AutoInstaller extends Handler {
         void onComplete();
 
         void onNeed2OpenService();
+
+        void needPermission();
     }
 
     private OnStateChangedListener mOnStateChangedListener;
@@ -109,6 +116,7 @@ public class AutoInstaller extends Handler {
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
+            result = false;
         } finally {
             try {
                 if (outputStream != null) {
@@ -127,12 +135,32 @@ public class AutoInstaller extends Handler {
     }
 
     private void installUseAS(String filePath) {
+        // 存储空间
+        if (permissionDenied()) {
+            sendEmptyMessage(4);
+            return;
+        }
+
+        // 允许安装应用
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            boolean b = mContext.getPackageManager().canRequestPackageInstalls();
+            if (!b) {
+                sendEmptyMessage(4);
+                return;
+            }
+        }
+
         File file = new File(filePath);
+        if (!file.exists()) {
+            Log.e(TAG, "apk file not exists, path: " + filePath);
+            return;
+        }
         Uri uri = Uri.fromFile(file);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".fileProvider", file);
+            mContext.grantUriPermission(mContext.getPackageName(), contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
@@ -143,6 +171,23 @@ public class AutoInstaller extends Handler {
             toAccessibilityService();
             sendEmptyMessage(3);
         }
+    }
+
+    private boolean permissionDenied() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] permissions = {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+
+            for (String str : permissions) {
+                if (mContext.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void toAccessibilityService() {
@@ -200,8 +245,9 @@ public class AutoInstaller extends Handler {
 
                 switch (mMode) {
                     case BOTH:
-                        if (!Utils.checkRooted() || !installUseRoot(filePath))
+                        if (!Utils.checkRooted() || !installUseRoot(filePath)) {
                             installUseAS(filePath);
+                        }
                         break;
                     case ROOT_ONLY:
                         installUseRoot(filePath);
@@ -231,6 +277,11 @@ public class AutoInstaller extends Handler {
             case 3:
                 if (mOnStateChangedListener != null)
                     mOnStateChangedListener.onNeed2OpenService();
+                break;
+            case 4:
+                if (mOnStateChangedListener != null) {
+                    mOnStateChangedListener.needPermission();
+                }
                 break;
 
         }
