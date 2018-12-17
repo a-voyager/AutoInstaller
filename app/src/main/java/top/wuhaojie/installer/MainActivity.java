@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-         /* 方案一: 默认安装器 */
+        /* 方案一: 默认安装器 */
         AutoInstaller installer = AutoInstaller.getDefault(MainActivity.this);
-//        installer.install(APK_FILE_PATH);
-        installer.installFromUrl(APK_URL);
+        installer.install(APK_FILE_PATH);
+//        installer.installFromUrl(APK_URL);
         installer.setOnStateChangedListener(new AutoInstaller.OnStateChangedListener() {
             @Override
             public void onStart() {
@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onNeed2OpenService() {
                 Toast.makeText(MainActivity.this, "请打开辅助功能服务", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void needPermission() {
+                Toast.makeText(MainActivity.this, "需要申请存储空间权限", Toast.LENGTH_SHORT).show();
             }
         });
 

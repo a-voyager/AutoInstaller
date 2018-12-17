@@ -84,6 +84,11 @@ AutoInstaller installer = new AutoInstaller.Builder(this)
         .build();
 ```
 
+## Updates
+1. fixed on Android O
+2. support override install
+
+
 ## Support me
 
 

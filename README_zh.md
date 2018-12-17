@@ -84,6 +84,11 @@ AutoInstaller installer = new AutoInstaller.Builder(this)
         .build();
 ```
 
+## 更新
+1. 适配 Android O
+2. 修复高版本覆盖安装特性，感谢@雪松
+
+
 
 ## 赞助作者
 
